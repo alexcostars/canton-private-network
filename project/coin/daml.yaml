@@ -1,0 +1,14 @@
+sdk-version: 2.3.20
+name: coin
+version: 1.0.0
+source: daml/Main.daml
+scenario: Main:mainScenario
+exposed-modules:
+- Main
+parties:
+- Banco
+- Cliente
+dependencies:
+- daml-prim
+- daml-stdlib
+- daml-script

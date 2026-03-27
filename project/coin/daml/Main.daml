@@ -1,0 +1,39 @@
+module Main where
+
+import Daml.Script
+
+template Coin
+  with
+    issuer : Party
+    owner : Party
+    name : Text
+    value : Decimal
+  where
+    signatory issuer
+    observer owner
+    
+    choice Transfer : ContractId Coin
+      with
+        newOwner : Party
+      controller owner
+      do
+        create this with owner = newOwner
+
+testAsset : Script ()
+testAsset = script do
+  alice <- allocateParty "Alice"
+  bob <- allocateParty "Bob"
+  
+  -- Alice creates an asset
+  assetCid <- submit alice do
+    createCmd Coin with
+      issuer = alice
+      owner = alice
+      name = "Test Asset"
+      value = 100.0
+  
+  -- Alice transfers the asset to Bob
+  newAssetCid <- submit alice do
+    exerciseCmd assetCid Transfer with newOwner = bob
+  
+  return ()
