@@ -6,8 +6,8 @@ scenario: Main:mainScenario
 exposed-modules:
 - Main
 parties:
-- Banco
-- Cliente
+- Alice
+- Brian
 dependencies:
 - daml-prim
 - daml-stdlib
