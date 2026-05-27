@@ -1,0 +1,26 @@
+POST http://localhost:5003/v2/commands/submit-and-wait
+Content-Type: application/json
+
+{
+  "commands": [
+    {
+      "CreateCommand": {
+        "createArguments": {
+          "issuer": "Abigail::12201bb462caa644908d153cb4b74c9fc7550763659133a15e45ba50192e535e0204",
+          "owner": "Abigail::12201bb462caa644908d153cb4b74c9fc7550763659133a15e45ba50192e535e0204",
+          "name": "Example Asset Name",
+          "value": "1000"
+        },
+        "templateId": "#coin:Main:Coin"
+      }
+    }
+  ],
+  "userId": "admin_alice",
+  "commandId": "example-app-create-12345",
+  "actAs": [
+    "Abigail::12201bb462caa644908d153cb4b74c9fc7550763659133a15e45ba50192e535e0204"
+  ],
+  "readAs": [
+    "Abigail::12201bb462caa644908d153cb4b74c9fc7550763659133a15e45ba50192e535e0204"
+  ]
+}

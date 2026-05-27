@@ -1,0 +1,9 @@
+POST http://localhost:5003/v2/state/active-contracts
+Content-Type: application/json
+
+{
+  "filter": {
+    "filtersForAnyParty": {}
+  },
+  "activeAtOffset": 42
+}

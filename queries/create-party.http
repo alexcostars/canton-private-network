@@ -1,0 +1,8 @@
+# https://docs.digitalasset.com/build/3.4/reference/json-api/openapi.html
+
+POST http://localhost:5003/v2/parties
+Content-Type: application/json
+
+{
+  "partyIdHint": "Alicia"
+}
