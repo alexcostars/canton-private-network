@@ -1,4 +1,4 @@
-sdk-version: 2.7.9
+sdk-version: 3.4.11
 name: coin
 version: 1.0.0
 source: daml/Main.daml

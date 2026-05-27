@@ -1,40 +1,36 @@
-# Ambiente local
+# Setup
+
+Para todos os containers será utilizada a rede:
+```
+docker network create canton-network
+```
 
 ## Iniciando uma rede local
 
-Preparando o ambiente:
+Para subir uma rede local com dois participantes (`participant1` e `participant2`), execute:
 ```
-docker network create canton-network-internal
-```
-
-Para subir uma rede local simulando dois nós (`participant1` e `participant2`), execute:
-```
-docker run --rm -it --name canton-network -p 5001:5001 -p 5002:5002 -p 5011:5011 -p 5012:5012 -p 5013:5013 -p 5014:5014 -v ./config:/canton/config -v ./data:/canton/data --network canton-network-internal digitalasset/canton-open-source:2.7.9 -c /canton/config/remote.conf --bootstrap /canton/config/bootstrap-full.canton
+docker run -it --rm --name canton-dev --network canton-network -p 5003:5003 -p 5013:5013 -v "$(pwd)/config/developer/components.conf:/app/additional-config.conf" -v "$(pwd)/config/developer/bootstrap-full.scala:/app/bootstrap.sc" -v "$(pwd)/config/developer/shared-volume:/canton/data" -e LOG_LEVEL_STDOUT=INFO europe-docker.pkg.dev/da-images/public/docker/canton-base:3.4.11
 ```
 
-Caso prefira iniciar a rede sem participantes pré-carregados, utilize o arquivo `bootstrap-basic.canton` em vez do `bootstrap-full.canton`.
+Caso prefira iniciar a rede sem paties pré-carregados, utilize o arquivo `bootstrap-basic.scala` em vez do `bootstrap-full.scala`.
 
-Opcional: E agora adicione o primeiro template customizado (smart contract) na rede:
-```
-participant1.dars.upload("/canton/data/coin-1.0.0.dar")
-participant2.dars.upload("/canton/data/coin-1.0.0.dar")
-```
+## Iniciando uma rede produtiva
 
-## Explorer UI
-
-A Canton disponibiliza uma interface gráfica para interagir com o nó. Execute o container abaixo para inicializar essa interface gráfica:
+Para subir uma rede produtiva que possua containers separados para cada nó (`participant1` e `participant2`) e um container para o `synchronizer` (`sequencers` + `mediators`), execute:
 ```
-docker run -it --rm --name canton-explorer -p 7575:4000 --network canton-network-internal digitalasset/daml-sdk:2.9.7 daml navigator server canton-network 5002
+cd config/production
+docker compose up
 ```
-Modifique o último parâmetro (`5002`) para corresponder à porta definida em `ledger-api.port` do respectivo nó alvo, definido no arquivo [`remote.conf`](./config/remote.conf)
 
 # Fazendo deploy de um contrato
 
 Pode-se instalar o SDK do DAML na máquina local ou utilizar um container para acessar a ferramenta de desenvolvimento sem a necessidade de instalação local:
 ```
-docker run -it --rm --name canton-sdk --entrypoint /bin/bash -v ./project:/home/project --network canton-network-internal digitalasset/daml-sdk:2.7.9
+docker run -it --rm --name daml-sdk -v "$(pwd)/project:/home/project" ubuntu:latest
+apt update && apt install -y curl openjdk-17-jdk
+curl https://get.daml.com | sh
+export PATH=$PATH:/root/.daml/bin
 ```
-
 
 Agora vamos compilar o projeto:
 ```
