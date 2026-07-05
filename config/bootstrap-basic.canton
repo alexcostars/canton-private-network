@@ -1,6 +1,0 @@
-// Conectar participantes ao domínio
-participant1.domains.connect_local(localdomain)
-participant2.domains.connect_local(localdomain)
-
-// Listar identidades para confirmar sucesso
-nodes.local.foreach(n => println(s"${n.name}: ${n.health.status}"))

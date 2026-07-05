@@ -1,0 +1,24 @@
+# https://docs.digitalasset.com/build/3.4/reference/json-api/openapi.html
+
+POST http://localhost:5003/v2/users
+Content-Type: application/json
+
+{
+  "user": {
+    "id": "admin_alice",
+    "primaryParty": "Alice",
+    "isDeactivated": false,
+    "identityProviderId": ""
+  },
+  "rights": [
+    {
+      "kind": {
+        "CanActAs": {
+          "value": {
+            "party": "Alice::12204c93358e267db26bc16c13d88ebbbd29f5d5b787371510c986c13cb52c8de76e"
+          }
+        }
+      }
+    }
+  ]
+}

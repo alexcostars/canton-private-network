@@ -1,0 +1,70 @@
+name: canton-network
+services:
+  synchronizer:
+    image: europe-docker.pkg.dev/da-images/public/docker/canton-base:3.4.11
+    container_name: canton-synchronizer
+    networks:
+      - canton-network
+    ports:
+      - "5018:5018"
+    volumes:
+      - ./synchronizer/components.conf:/app/additional-config.conf
+      - ./synchronizer/bootstrap.scala:/app/bootstrap.sc
+      - ./shared-volume:/canton/data
+    environment:
+      - LOG_LEVEL_STDOUT=INFO
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://canton-synchronizer:5090/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+  participant1:
+    image: europe-docker.pkg.dev/da-images/public/docker/canton-base:3.4.11
+    container_name: canton-participant1
+    networks:
+      - canton-network
+    ports:
+      - "5005:5003"
+      - "5031:5050"
+    volumes:
+      - ./participant1/components.conf:/app/additional-config.conf
+      - ./participant1/bootstrap.scala:/app/bootstrap.sc
+      - ./participant1/shared-volume:/canton/data
+    environment:
+      - LOG_LEVEL_STDOUT=INFO
+    depends_on:
+      synchronizer:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://canton-participant1:5090/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+  participant2:
+    image: europe-docker.pkg.dev/da-images/public/docker/canton-base:3.4.11
+    container_name: canton-participant2
+    networks:
+      - canton-network
+    ports:
+      - "5006:5003"
+      - "5032:5050"
+    volumes:
+      - ./participant2/components.conf:/app/additional-config.conf
+      - ./participant2/bootstrap.scala:/app/bootstrap.sc
+      - ./participant2/shared-volume:/canton/data
+    environment:
+      - LOG_LEVEL_STDOUT=INFO
+    depends_on:
+      synchronizer:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://canton-participant2:5090/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+networks:
+  canton-network:
+    external: true
